@@ -1,0 +1,21 @@
+{
+	"Server": {
+		"ServerType": "simple",
+		"HTTPPort": 58002,
+		"HTTPAccessLog": "./http-access.log",
+		"Log": "./app.log",
+		"EnablePProf": true,
+		"HealthCheckType": "simple",
+		"HealthCheckPath": "/health.txt"
+	},
+	"General": {
+		"AuthenticationServiceBaseURL": "http://localhost:58001/clawio/v1/auth/",
+		"RequestBodyMaxSize": 8589934592
+	}, 
+	"DataController": {
+		"Type": "simple",
+		"SimpleDataDir": "/tmp/clawio-service-localfs-data",
+		"SimpleTempDir": "/tmp",
+		"SimpleChecksum": ""
+	}
+}
