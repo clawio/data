@@ -100,15 +100,15 @@ func (s *Service) Middleware(h http.Handler) http.Handler {
 // Endpoints is a listing of all endpoints available in the Service.
 func (s *Service) Endpoints() map[string]map[string]http.HandlerFunc {
 	return map[string]map[string]http.HandlerFunc{
-		"/metrics": map[string]http.HandlerFunc{
+		"/metrics": {
 			"GET": func(w http.ResponseWriter, r *http.Request) {
 				prometheus.Handler().ServeHTTP(w, r)
 			},
 		},
-		"/upload/{path:.*}": map[string]http.HandlerFunc{
+		"/upload/{path:.*}": {
 			"PUT": prometheus.InstrumentHandlerFunc("/upload", s.authenticateHandlerFunc(s.Upload)),
 		},
-		"/download/{path:.*}": map[string]http.HandlerFunc{
+		"/download/{path:.*}": {
 			"GET": prometheus.InstrumentHandlerFunc("/download", s.authenticateHandlerFunc(s.Download)),
 		},
 	}
