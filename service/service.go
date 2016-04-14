@@ -106,10 +106,10 @@ func (s *Service) Endpoints() map[string]map[string]http.HandlerFunc {
 			},
 		},
 		"/upload/{path:.*}": map[string]http.HandlerFunc{
-			"PUT": prometheus.InstrumentHandlerFunc("/upload", s.AuthenticateHandlerFunc(s.Upload)),
+			"PUT": prometheus.InstrumentHandlerFunc("/upload", s.authenticateHandlerFunc(s.Upload)),
 		},
 		"/download/{path:.*}": map[string]http.HandlerFunc{
-			"GET": prometheus.InstrumentHandlerFunc("/download", s.AuthenticateHandlerFunc(s.Download)),
+			"GET": prometheus.InstrumentHandlerFunc("/download", s.authenticateHandlerFunc(s.Download)),
 		},
 	}
 }
@@ -121,7 +121,7 @@ func (s *Service) getTokenFromRequest(r *http.Request) string {
 	return r.URL.Query().Get("token")
 }
 
-func (s *Service) AuthenticateHandlerFunc(handler http.HandlerFunc) http.HandlerFunc {
+func (s *Service) authenticateHandlerFunc(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := s.getTokenFromRequest(r)
 		user, _, err := s.SDK.Auth.Verify(token)

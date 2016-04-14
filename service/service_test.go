@@ -23,7 +23,7 @@ var user = &emocks.MockUser{Username: "test"}
 type TestSuite struct {
 	suite.Suite
 	MockAuthService    *mocks.MockAuthService
-	MockDataController *mock_datacontroller.MockDataController
+	MockDataController *mock_datacontroller.DataController
 	SDK                *sdk.SDK
 	Service            *Service
 	Server             *server.SimpleServer
@@ -53,7 +53,7 @@ func (suite *TestSuite) SetupTest() {
 	svc.SDK = s
 	svc.Config = cfg
 
-	mockDataController := &mock_datacontroller.MockDataController{}
+	mockDataController := &mock_datacontroller.DataController{}
 	svc.DataController = mockDataController
 	suite.MockDataController = mockDataController
 

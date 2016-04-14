@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Upload uploads a blob to user tree.
 func (s *Service) Upload(w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
