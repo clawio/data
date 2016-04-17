@@ -7,4 +7,4 @@ This repository contains the ClawIO Data Service that deals with data transfers.
 
 Current implementaions are as follows:
 
-* Simple: uses a local filesystem for data persistence.
+* Simple: uses a local filesystem for data persistency.
