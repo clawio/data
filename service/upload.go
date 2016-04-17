@@ -7,6 +7,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/clawio/codes"
 	"github.com/clawio/entities"
+	"github.com/clawio/keys"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 )
@@ -18,7 +19,7 @@ func (s *Service) Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	path := mux.Vars(r)["path"]
-	user := context.Get(r, userKey).(entities.User)
+	user := context.Get(r, keys.UserKey).(entities.User)
 	clientChecksum := s.getClientChecksum(r)
 	readCloser := http.MaxBytesReader(w, r.Body, s.Config.General.RequestBodyMaxSize)
 	if err := s.DataController.UploadBLOB(user, path, readCloser, clientChecksum); err != nil {

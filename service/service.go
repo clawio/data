@@ -6,6 +6,7 @@ import (
 
 	"github.com/NYTimes/gizmo/config"
 	"github.com/clawio/data/datacontroller"
+	"github.com/clawio/keys"
 	"github.com/clawio/sdk"
 	"github.com/gorilla/context"
 	"github.com/prometheus/client_golang/prometheus"
@@ -129,7 +130,7 @@ func (s *Service) authenticateHandlerFunc(handler http.HandlerFunc) http.Handler
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
-		context.Set(r, userKey, user)
+		context.Set(r, keys.UserKey, user)
 		handler(w, r)
 	}
 }

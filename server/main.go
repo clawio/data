@@ -10,7 +10,7 @@ func main() {
 	var cfg *service.Config
 	config.LoadJSONFile("./config.json", &cfg)
 
-	server.Init("service-localfs-data", cfg.Server)
+	server.Init("ClawIO Data Service", cfg.Server)
 
 	svc, err := service.New(cfg)
 	if err != nil {
