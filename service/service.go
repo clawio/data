@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/NYTimes/gizmo/config"
 	"github.com/clawio/data/datacontroller"
@@ -12,15 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-const (
-	// userKey can be used to store/retrieve a user ID in a request context.
-	userKey contextKey = iota
-)
-
 type (
-	// contextKey is a type to use as a key for storing data in the request context.
-	contextKey int
-
 	// Service implements server.Service and
 	// handle all requests to the server.
 	Service struct {
@@ -72,18 +65,28 @@ func New(cfg *Config) (*Service, error) {
 	urls.AuthServiceBaseURL = cfg.General.AuthenticationServiceBaseURL
 	s := sdk.New(urls, nil)
 
-	dataController := getDataController(cfg.DataController)
+	dataController, err := getDataController(cfg.DataController)
+	if err != nil {
+		return nil, err
+	}
 	return &Service{Config: cfg, SDK: s, DataController: dataController}, nil
 }
 
-func getDataController(cfg *DataControllerConfig) datacontroller.DataController {
+func getDataController(cfg *DataControllerConfig) (datacontroller.DataController, error) {
 	opts := &datacontroller.SimpleDataControllerOptions{
 		DataDir:              cfg.SimpleDataDir,
 		TempDir:              cfg.SimpleTempDir,
 		Checksum:             cfg.SimpleChecksum,
 		VerifyClientChecksum: cfg.SimpleVerifyClientChecksum,
 	}
-	return datacontroller.NewSimpleDataController(opts)
+	// create DataDir and TempDir
+	if err := os.MkdirAll(opts.DataDir, 0755); err != nil {
+		return nil, err
+	}
+	if err := os.MkdirAll(opts.TempDir, 0755); err != nil {
+		return nil, err
+	}
+	return datacontroller.NewSimpleDataController(opts), nil
 }
 
 // Prefix returns the string prefix used for all endpoints within
