@@ -74,7 +74,7 @@ func New(cfg *Config) (*Service, error) {
 }
 
 func getDataController(cfg *DataControllerConfig) (datacontroller.DataController, error) {
-	opts := &simple.SimpleDataControllerOptions{
+	opts := &simple.Options{
 		DataDir:              cfg.SimpleDataDir,
 		TempDir:              cfg.SimpleTempDir,
 		Checksum:             cfg.SimpleChecksum,

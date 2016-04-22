@@ -25,7 +25,7 @@ func Test(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }
 func (suite *TestSuite) SetupTest() {
-	opts := &SimpleDataControllerOptions{
+	opts := &Options{
 		DataDir: "/tmp",
 		TempDir: "/tmp",
 	}
@@ -43,7 +43,7 @@ func (suite *TestSuite) TeardownTest() {
 	os.RemoveAll("/tmp/t")
 }
 func (suite *TestSuite) TestNew() {
-	opts := &SimpleDataControllerOptions{
+	opts := &Options{
 		DataDir: "/tmp",
 		TempDir: "/tmp",
 	}

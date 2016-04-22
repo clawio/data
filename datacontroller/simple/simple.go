@@ -27,9 +27,9 @@ type simpleDataController struct {
 }
 
 // New returns an implementation of DataController.
-func New(opts *SimpleDataControllerOptions) datacontroller.DataController {
+func New(opts *Options) datacontroller.DataController {
 	if opts == nil {
-		opts = &SimpleDataControllerOptions{}
+		opts = &Options{}
 	}
 	return &simpleDataController{
 		dataDir:              opts.DataDir,
@@ -39,9 +39,9 @@ func New(opts *SimpleDataControllerOptions) datacontroller.DataController {
 	}
 }
 
-// SimpleDataControllerOptions hold the configuration options for the
+// Options hold the configuration options for the
 // SimpleDataController.
-type SimpleDataControllerOptions struct {
+type Options struct {
 	DataDir              string
 	TempDir              string
 	Checksum             string
