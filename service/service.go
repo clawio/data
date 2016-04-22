@@ -7,6 +7,7 @@ import (
 
 	"github.com/NYTimes/gizmo/config"
 	"github.com/clawio/data/datacontroller"
+	"github.com/clawio/data/datacontroller/simple"
 	"github.com/clawio/keys"
 	"github.com/clawio/sdk"
 	"github.com/gorilla/context"
@@ -73,7 +74,7 @@ func New(cfg *Config) (*Service, error) {
 }
 
 func getDataController(cfg *DataControllerConfig) (datacontroller.DataController, error) {
-	opts := &datacontroller.SimpleDataControllerOptions{
+	opts := &simple.SimpleDataControllerOptions{
 		DataDir:              cfg.SimpleDataDir,
 		TempDir:              cfg.SimpleTempDir,
 		Checksum:             cfg.SimpleChecksum,
@@ -86,7 +87,7 @@ func getDataController(cfg *DataControllerConfig) (datacontroller.DataController
 	if err := os.MkdirAll(opts.TempDir, 0755); err != nil {
 		return nil, err
 	}
-	return datacontroller.NewSimpleDataController(opts), nil
+	return simple.New(opts), nil
 }
 
 // Prefix returns the string prefix used for all endpoints within

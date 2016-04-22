@@ -1,4 +1,4 @@
-package datacontroller
+package simple
 
 import (
 	"io/ioutil"
@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/clawio/data/datacontroller"
 	"github.com/clawio/entities/mocks"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -16,7 +17,7 @@ var user = &mocks.MockUser{Username: "test"}
 
 type TestSuite struct {
 	suite.Suite
-	dataController       DataController
+	dataController       datacontroller.DataController
 	simpleDataController *simpleDataController
 }
 
@@ -28,7 +29,7 @@ func (suite *TestSuite) SetupTest() {
 		DataDir: "/tmp",
 		TempDir: "/tmp",
 	}
-	dataController := NewSimpleDataController(opts)
+	dataController := New(opts)
 	// create homedir for user test
 	err := os.MkdirAll("/tmp/t/test", 0755)
 	require.Nil(suite.T(), err)
@@ -41,15 +42,15 @@ func (suite *TestSuite) SetupTest() {
 func (suite *TestSuite) TeardownTest() {
 	os.RemoveAll("/tmp/t")
 }
-func (suite *TestSuite) TestNewSimpleDataController() {
+func (suite *TestSuite) TestNew() {
 	opts := &SimpleDataControllerOptions{
 		DataDir: "/tmp",
 		TempDir: "/tmp",
 	}
-	require.IsType(suite.T(), &simpleDataController{}, NewSimpleDataController(opts))
+	require.IsType(suite.T(), &simpleDataController{}, New(opts))
 }
-func (suite *TestSuite) TestNewSimpleDataController_withNilOptions() {
-	require.IsType(suite.T(), &simpleDataController{}, NewSimpleDataController(nil))
+func (suite *TestSuite) TestNew_withNilOptions() {
+	require.IsType(suite.T(), &simpleDataController{}, New(nil))
 }
 func (suite *TestSuite) TestUpload() {
 	reader := strings.NewReader("1")

@@ -1,4 +1,4 @@
-package datacontroller
+package simple
 
 import (
 	"crypto/md5"
@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/clawio/codes"
+	"github.com/clawio/data/datacontroller"
 	"github.com/clawio/entities"
 )
 
@@ -25,8 +26,8 @@ type simpleDataController struct {
 	verifyClientChecksum bool
 }
 
-// NewSimpleDataController returns an implementation of DataController.
-func NewSimpleDataController(opts *SimpleDataControllerOptions) DataController {
+// New returns an implementation of DataController.
+func New(opts *SimpleDataControllerOptions) datacontroller.DataController {
 	if opts == nil {
 		opts = &SimpleDataControllerOptions{}
 	}
