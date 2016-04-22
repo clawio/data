@@ -90,6 +90,21 @@ func (suite *TestSuite) TestNew() {
 	require.Nil(suite.T(), err)
 	require.NotNil(suite.T(), svc)
 }
+func (suite *TestSuite) TestgetDataController_withBadDataDir() {
+	cfg := &DataControllerConfig{
+		SimpleDataDir: "/i/cannot/write/here",
+	}
+	_, err := getDataController(cfg)
+	require.NotNil(suite.T(), err)
+}
+func (suite *TestSuite) TestgetDataController_withBadTempDir() {
+	cfg := &DataControllerConfig{
+		SimpleDataDir: "/tmp",
+		SimpleTempDir: "/i/cannot/write/here",
+	}
+	_, err := getDataController(cfg)
+	require.NotNil(suite.T(), err)
+}
 func (suite *TestSuite) TestNew_withNilConfig() {
 	_, err := New(nil)
 	require.NotNil(suite.T(), err)
@@ -108,6 +123,15 @@ func (suite *TestSuite) TestNew_withNilDataControllerConfig() {
 		Server:         nil,
 		General:        &GeneralConfig{},
 		DataController: nil,
+	}
+	_, err := New(cfg)
+	require.NotNil(suite.T(), err)
+}
+func (suite *TestSuite) TestNew_withBadDataController() {
+	cfg := &Config{
+		Server:         nil,
+		General:        &GeneralConfig{},
+		DataController: &DataControllerConfig{SimpleDataDir: "/i/cannot/write/here"},
 	}
 	_, err := New(cfg)
 	require.NotNil(suite.T(), err)
