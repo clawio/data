@@ -13,13 +13,13 @@ type DataController struct {
 }
 
 // UploadBLOB mocks the UploadBLOB call.
-func (m *DataController) UploadBLOB(user entities.User, pathSpec string, r io.Reader, clientChecksum string) error {
+func (m *DataController) UploadBLOB(user *entities.User, pathSpec string, r io.Reader, clientChecksum string) error {
 	args := m.Called()
 	return args.Error(0)
 }
 
 // DownloadBLOB mocks the DownloadBLOB call.
-func (m *DataController) DownloadBLOB(user entities.User, pathSpec string) (io.Reader, error) {
+func (m *DataController) DownloadBLOB(user *entities.User, pathSpec string) (io.Reader, error) {
 	args := m.Called()
 	return args.Get(0).(io.Reader), args.Error(1)
 }

@@ -16,7 +16,7 @@ import (
 // Download streams a file to the client.
 func (s *Service) Download(w http.ResponseWriter, r *http.Request) {
 	path := mux.Vars(r)["path"]
-	user := context.Get(r, keys.UserKey).(entities.User)
+	user := context.Get(r, keys.UserKey).(*entities.User)
 	reader, err := s.DataController.DownloadBLOB(user, path)
 	if err != nil {
 		s.handleDownloadError(err, w)

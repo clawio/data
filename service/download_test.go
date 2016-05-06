@@ -20,9 +20,9 @@ func (m *errorReader) Read(p []byte) (n int, err error) {
 
 func (suite *TestSuite) TestDownload() {
 	reader := strings.NewReader("1")
-	suite.MockAuthService.On("Verify", "").Once().Return(user, &codes.Response{}, nil)
 	suite.MockDataController.On("DownloadBLOB").Once().Return(reader, nil)
-	r, err := http.NewRequest("GET", "/clawio/v1/data/download/myblob", nil)
+	r, err := http.NewRequest("GET", downloadURL+"myblob", nil)
+	setToken(r)
 	require.Nil(suite.T(), err)
 	w := httptest.NewRecorder()
 	suite.Server.ServeHTTP(w, r)
@@ -33,9 +33,10 @@ func (suite *TestSuite) TestDownload() {
 }
 func (suite *TestSuite) TestDownload_withCodeNotFound() {
 	reader := strings.NewReader("1")
-	suite.MockAuthService.On("Verify", "").Once().Return(user, &codes.Response{}, nil)
 	suite.MockDataController.On("DownloadBLOB").Once().Return(reader, codes.NewErr(codes.NotFound, ""))
-	r, err := http.NewRequest("GET", "/clawio/v1/data/download/myblob", nil)
+	r, err := http.NewRequest("GET", downloadURL+"myblob", nil)
+	setToken(r)
+	require.Nil(suite.T(), err)
 	require.Nil(suite.T(), err)
 	w := httptest.NewRecorder()
 	suite.Server.ServeHTTP(w, r)
@@ -43,18 +44,20 @@ func (suite *TestSuite) TestDownload_withCodeNotFound() {
 }
 func (suite *TestSuite) TestDownload_withError() {
 	reader := strings.NewReader("1")
-	suite.MockAuthService.On("Verify", "").Once().Return(user, &codes.Response{}, nil)
 	suite.MockDataController.On("DownloadBLOB").Once().Return(reader, errors.New("some error"))
-	r, err := http.NewRequest("GET", "/clawio/v1/data/download/myblob", nil)
+	r, err := http.NewRequest("GET", downloadURL+"myblob", nil)
+	setToken(r)
+	require.Nil(suite.T(), err)
 	require.Nil(suite.T(), err)
 	w := httptest.NewRecorder()
 	suite.Server.ServeHTTP(w, r)
 	require.Equal(suite.T(), http.StatusInternalServerError, w.Code)
 }
 func (suite *TestSuite) TestDownload_withErrorCopying() {
-	suite.MockAuthService.On("Verify", "").Once().Return(user, &codes.Response{}, nil)
 	suite.MockDataController.On("DownloadBLOB").Once().Return(&errorReader{}, nil)
-	r, err := http.NewRequest("GET", "/clawio/v1/data/download/myblob", nil)
+	r, err := http.NewRequest("GET", downloadURL+"myblob", nil)
+	setToken(r)
+	require.Nil(suite.T(), err)
 	require.Nil(suite.T(), err)
 	w := httptest.NewRecorder()
 	suite.Server.ServeHTTP(w, r)

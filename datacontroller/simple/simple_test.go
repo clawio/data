@@ -8,12 +8,12 @@ import (
 	"testing"
 
 	"github.com/clawio/data/datacontroller"
-	"github.com/clawio/entities/mocks"
+	"github.com/clawio/entities"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
-var user = &mocks.MockUser{Username: "test"}
+var user = &entities.User{Username: "test"}
 
 type TestSuite struct {
 	suite.Suite
@@ -36,8 +36,6 @@ func (suite *TestSuite) SetupTest() {
 	suite.dataController = dataController
 	suite.simpleDataController = suite.dataController.(*simpleDataController)
 
-	// configure user mock
-	user.On("GetUsername").Return("test")
 }
 func (suite *TestSuite) TeardownTest() {
 	os.RemoveAll("/tmp/t")

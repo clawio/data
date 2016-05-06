@@ -6,11 +6,10 @@ import (
 	"os"
 
 	"github.com/NYTimes/gizmo/config"
+	"github.com/clawio/authentication/lib"
 	"github.com/clawio/data/datacontroller"
 	"github.com/clawio/data/datacontroller/simple"
-	"github.com/clawio/keys"
 	"github.com/clawio/sdk"
-	"github.com/gorilla/context"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -34,6 +33,8 @@ type (
 	// GeneralConfig contains configuration parameters
 	// for general parts of the service.
 	GeneralConfig struct {
+		BaseURL                      string
+		JWTKey, JWTSigningMethod     string
 		AuthenticationServiceBaseURL string
 		RequestBodyMaxSize           int64
 	}
@@ -93,7 +94,11 @@ func getDataController(cfg *DataControllerConfig) (datacontroller.DataController
 // Prefix returns the string prefix used for all endpoints within
 // this service.
 func (s *Service) Prefix() string {
-	return "/clawio/v1/data"
+	base := s.Config.General.BaseURL
+	if base == "" {
+		base = "/"
+	}
+	return base
 }
 
 // Middleware provides an http.Handler hook wrapped around all requests.
@@ -104,6 +109,7 @@ func (s *Service) Middleware(h http.Handler) http.Handler {
 
 // Endpoints is a listing of all endpoints available in the Service.
 func (s *Service) Endpoints() map[string]map[string]http.HandlerFunc {
+	authenticator := lib.NewAuthenticator(s.Config.General.JWTKey, s.Config.General.JWTSigningMethod)
 	return map[string]map[string]http.HandlerFunc{
 		"/metrics": {
 			"GET": func(w http.ResponseWriter, r *http.Request) {
@@ -111,30 +117,10 @@ func (s *Service) Endpoints() map[string]map[string]http.HandlerFunc {
 			},
 		},
 		"/upload/{path:.*}": {
-			"PUT": prometheus.InstrumentHandlerFunc("/upload", s.authenticateHandlerFunc(s.Upload)),
+			"PUT": prometheus.InstrumentHandlerFunc("/upload", authenticator.JWTHandlerFunc(s.Upload)),
 		},
 		"/download/{path:.*}": {
-			"GET": prometheus.InstrumentHandlerFunc("/download", s.authenticateHandlerFunc(s.Download)),
+			"GET": prometheus.InstrumentHandlerFunc("/download", authenticator.JWTHandlerFunc(s.Download)),
 		},
-	}
-}
-
-func (s *Service) getTokenFromRequest(r *http.Request) string {
-	if t := r.Header.Get("token"); t != "" {
-		return t
-	}
-	return r.URL.Query().Get("token")
-}
-
-func (s *Service) authenticateHandlerFunc(handler http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		token := s.getTokenFromRequest(r)
-		user, _, err := s.SDK.Auth.Verify(token)
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-			return
-		}
-		context.Set(r, keys.UserKey, user)
-		handler(w, r)
 	}
 }
