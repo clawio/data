@@ -12,7 +12,7 @@ func main() {
 	var cfg *service.Config
 	config.LoadJSONFile(*config.ConfigLocationCLI, &cfg)
 
-	server.Init("ClawIO Data Service", cfg.Server)
+	server.Init("data-service", cfg.Server)
 
 	svc, err := service.New(cfg)
 	if err != nil {
