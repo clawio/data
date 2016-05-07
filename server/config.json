@@ -9,8 +9,9 @@
 		"HealthCheckPath": "/health.txt"
 	},
 	"General": {
-		"JWTValidationKey": "secret",
-		"AuthenticationServiceBaseURL": "http://localhost:58001/clawio/v1/auth/",
+		"JWTKey": "secret",
+		"JWTSigningKey": "HS256",
+		"AuthenticationServiceBaseURL": "http://localhost:58001/api/auth/",
 		"RequestBodyMaxSize": 8589934592
 	}, 
 	"DataController": {

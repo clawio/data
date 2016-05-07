@@ -1,14 +1,16 @@
 package main
 
 import (
+	"flag"
 	"github.com/NYTimes/gizmo/config"
 	"github.com/NYTimes/gizmo/server"
 	"github.com/clawio/data/service"
 )
 
 func main() {
+	flag.Parse()
 	var cfg *service.Config
-	config.LoadJSONFile("./config.json", &cfg)
+	config.LoadJSONFile(*config.ConfigLocationCLI, &cfg)
 
 	server.Init("ClawIO Data Service", cfg.Server)
 
